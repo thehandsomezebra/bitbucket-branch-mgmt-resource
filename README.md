@@ -20,10 +20,10 @@ Currently, it will do a PR for two existing branches.
 
 > It takes advantage of `rest/api/1.0` calls.
 
-> If you are not using the same version that I am, or your BitBucket admin has certain features limited/turned off -- **please note that your mileage may vary.**
+> If you are not using the same version that I am, or if your BitBucket admin has certain features limited/turned off -- **please note that your mileage may vary.**
 ---
 
-## Service Account
+### Additional notes on a Service Account User
 
 - I recommend that you set up a Service Account user in BitBucket for these actions. Once created, set up a token. That will be the token you will use as a var in the pipeline.
 - Additional setup for granting the service user access to your project/repo is REQUIRED. Please do that: otherwise, you will not be able to use this pipeline resource tool successfully.
