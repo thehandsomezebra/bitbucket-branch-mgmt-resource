@@ -69,7 +69,7 @@ jobs:
 resources:
   - name: bitbucket
     icon: cloud
-    type: bitbucket-pr-resource
+    type: bitbucket-branch-mgmt-resource
     source:
       bitbucket_url: "https://bitbucket.company.com/"
       token: (( vault "secret/concourse/devops_account:token" ))
@@ -81,10 +81,10 @@ resources:
 
 ```yml
 resource_types:
-  - name: bitbucket-pr-resource
+  - name: bitbucket-branch-mgmt-resource
     type: registry-image
     source:
-      repository: thehandsomezebra/bitbucket-pr-resource
+      repository: thehandsomezebra/bitbucket-branch-mgmt-resource
       tag: latest
 ```
 
