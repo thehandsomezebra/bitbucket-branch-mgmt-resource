@@ -8,14 +8,19 @@ Currently, it will do a PR for two existing branches.
 
 ## Notes and Usage
 
-- Both the `to` and `from` PR branches must already exist!
+- To do a PR, both the `to` and `from` PR branches must already exist!
 - A token for a BitBucket user is required: Service accounts are recommended. (see Service Account section below)
 - You may use a repo in a project OR a repo that belongs to a user. The BitBucket user mentioned above MUST have access to it.
 - Other recommendations I would give you would be to use the [built-in Concourse Git Resource Type](https://github.com/concourse/git-resource).  Read up on that.  You can use the `put` to push local commits to the repo.
 - Be mindful when you accept the PRs... you may want to put delete protection on it.. because if the branch doesn't exist anymore, your pipeline won't function.
 - Also, if you aren't keeping your branches in step - you are VERY likely to run into conflicts. (A later update to this resource type may help).
 
+---
+> This was created and tested using Atlassian Bitbucket Server v6.7.2. 
 
+> It takes advantage of `rest/api/1.0` calls.
+
+> If you are not using the same version that I am, or your BitBucket admin has certain features limited/turned off -- **please note that your mileage may vary.**
 ---
 
 ## Service Account
