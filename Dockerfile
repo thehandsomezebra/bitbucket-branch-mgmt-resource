@@ -20,10 +20,10 @@ RUN apt-get update \
 
 
 
-# Install git-lfs
-RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
-    apt-get install git-lfs && \
-    git lfs install
+# # Install git-lfs
+# RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
+#     apt-get install git-lfs && \
+#     git lfs install
 
 # Add a user for running things as non-superuser
 RUN useradd -ms /bin/bash worker

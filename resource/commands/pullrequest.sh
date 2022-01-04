@@ -1,2 +1,5 @@
+to_branch=$(get_option '.to_branch')
 
-printf "Oh look, it made it here."
+echo "$to_branch"
+
+echo "Oh look, it made it here."
