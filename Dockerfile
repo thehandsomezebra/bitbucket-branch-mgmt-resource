@@ -8,41 +8,14 @@ ENV COLUMNS=80
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
-    && apt-get install -yy wget gnupg \
-    && wget -q -O - https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
     && apt-get update && apt-get install -yy \
       curl \
       git \
       jq \
       file \
-      autoconf \
-      build-essential \
-      bzip2 \
-      certstrap \
-      concourse-fly \
-      hub \
-      libreadline8 \
-      libreadline-dev \
-      libsqlite3-dev \
-      libssl-dev \
-      libtool \
-      libxml2-dev \
-      libxslt-dev \
-      libyaml-dev \
-      lsof \
-      om \
-      openssl \
-      pivnet-cli \
-      ruby \
-      ruby-dev \
-      sipcalc \
-      spruce \
-      sqlite3 \
       vim-common \
       wget \
       unzip \
-      zlib1g-dev \
-      zlibc \
     && rm -rf /var/lib/apt/lists/*
 
 

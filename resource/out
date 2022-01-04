@@ -1,0 +1,75 @@
+#!/bin/bash
+
+set -e -u
+
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+BRed='\033[1;31m'    # Bold red
+BGreen='\033[1;32m'  # Bold Green
+BBlue='\033[1;34m'   # Bold Blue
+BYellow='\033[1;33m' # Bold Yellow
+NC='\033[0m'         # No Color
+
+source=$1
+if [[ -z "$source" ]]; then
+  echo "usage: $0 <path/to/source>"
+  exit 1
+fi
+# for jq
+PATH=/usr/local/bin:$PATH
+export TMPDIR=${TMPDIR:-/tmp/confluence_pr}
+mkdir -p "${TMPDIR}"
+payload=$(mktemp "$TMPDIR/resource-request.XXXXXX")
+cat >"$payload" <&0
+
+
+# #from the resource
+bitbucket_url=$(jq -r '.source.bitbucket_url // ""' <"$payload")
+access_token=$(jq -r '.source.access_token // ""' <"$payload")
+
+
+# #from the task
+get_option() {
+  local key=${1:?config key null or not set}
+  local default=${2:-}
+  echo "$OPTIONS" | jq -r --arg default "$default" "$key // \$default"
+}
+
+# ^^ this is going to make things way cleaner.
+#so instead of:
+  # org=$(jq -r '.params.org // ""' <"$payload")                           #required
+
+#it will be like this:
+to_branch=$(get_option '.to_branch')
+
+##do things
+# convert the single command into a single element array
+if echo $params | jq -e 'has("command")' >/dev/null; then
+  params=$(jq -n --argjson params "$params" '{commands: [ $params ] }')
+fi
+
+#and now run thru the commands
+echo "$params" | jq -c '.commands[]' | while read -r OPTIONS; do
+  (
+    command=$(get_option '.command')
+
+    command_script=$base_dir/resource/commands/$command.sh
+    if [ -f "$command_script" ]; then
+      source "$command_script"
+    else
+      printf '%b[ERROR]%b %s\n' "$BRed" "$NC" "invalid payload (unknown command: $command)"
+      exit 1
+    fi
+  )
+done
+
+
+##done
+jq -n \
+  --arg timestamp $(date +%s) \
+  '{
+  version: {
+    timestamp: $timestamp
+  }
+}' >&3
