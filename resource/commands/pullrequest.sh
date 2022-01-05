@@ -89,6 +89,7 @@ EOF
 }
 
 echo $(generate_post_data)
+echo "Sending the above request to this url: $api_url "
 
 ## make a pull request
 
@@ -96,6 +97,8 @@ curl -H "Authorization: Bearer ${access_token}" \
   $api_url \
   --request POST --header 'Content-Type: application/json' \
   --data "$(generate_post_data)" | jq '.' >response.json
+
+cat response.json
 
 cat response.json | jq '.[][].message' &>/dev/null
 if [ $? -eq 0 ]; then
