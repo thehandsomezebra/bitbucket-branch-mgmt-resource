@@ -88,7 +88,7 @@ generate_post_data() {
 EOF
 }
 
-# echo $(generate_post_data)
+echo $(generate_post_data)
 
 ## make a pull request
 
