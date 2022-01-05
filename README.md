@@ -49,7 +49,7 @@ resource_types:
 ```yml
 resources:
   - name: bitbucket
-    icon: cloud
+    icon: cog
     type: bitbucket-branch-mgmt-resource
     source:
       bitbucket_url: "https://bitbucket.company.com/"

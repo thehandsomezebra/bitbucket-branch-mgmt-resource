@@ -39,7 +39,7 @@ resources:
       private_key: (( secret_key ))
 
   - name: bitbucket-mgmt
-    icon: cloud
+    icon: cog
     type: bitbucket-branch-mgmt-resource
     source:
       bitbucket_url: "https://mycompany.com/"
