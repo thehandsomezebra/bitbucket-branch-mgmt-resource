@@ -14,6 +14,8 @@ NC='\033[0m'         # No Color
 
 base_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
+source "$base_dir/resource/lib/color.sh"
+
 working_dir=${1:-}
 
 if [ -z "$working_dir" ]; then
@@ -48,7 +50,7 @@ get_option() {
 
 params=$(get_config '.params')
 if [ -z "$params" ]; then
-  printf '%b[ERROR]%b %s\n' "$BRed" "$NC" "invalid PAYLOAD (missing params)"
+  color::error "invalid PAYLOAD (missing params)"
   exit 1
 fi
 
@@ -66,7 +68,7 @@ echo "$params" | jq -c '.commands[]' | while read -r OPTIONS; do
     if [ -f "$command_script" ]; then
       source "$command_script"
     else
-      printf '%b[ERROR]%b %s\n' "$BRed" "$NC" "invalid PAYLOAD (unknown command: $command)"
+      color::error "invalid PAYLOAD (unknown command: $command)"
       exit 1
     fi
   )

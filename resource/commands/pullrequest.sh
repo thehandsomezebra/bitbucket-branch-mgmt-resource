@@ -35,7 +35,7 @@ if [ ! -z $reviewers ]; then
       userblock="{\"user\": {\"name\": \"$user\"}}"
       echo "$userblock, " >>$tempDir/userblock.txt
     done
-  #grab all that we set
+  #grab all users set
   reviewers_set=$(cat $tempDir/userblock.txt)
   #remove the last comma and space
   reviewers_set=$(echo "${reviewers_set%??}")
@@ -84,11 +84,11 @@ generate_post_data() {
 EOF
 }
 
-echo $(generate_post_data)
-echo "Sending the above request to this url: $api_url "
+# echo $(generate_post_data)
+# echo "Sending the above request to this url: $api_url "
 
 ## make a pull request
-curl -H "Authorization: Bearer ${access_token}" \
+curl --silent -H "Authorization: Bearer ${access_token}" \
   $api_url \
   --request POST --header 'Content-Type: application/json' \
   --data "$(generate_post_data)" | jq '.' >response.json
@@ -96,50 +96,56 @@ curl -H "Authorization: Bearer ${access_token}" \
 if cat response.json | grep -q '"message":'; then
   #If `"message":` is populated.. it's an error.
   message=$(cat response.json | jq '.[][].message')
+  color::boldblue "=========================================================================="
   echo $message
   case $message in
   *"already up-to-date"*)
-    echo "No changes!"
-    #################### IF THE DELETE FLAG IS ON:  delete_if_no_changes #######
-    #     echo "Cleaning up unnecessary branch..."
-    #     #assemble the delete url
-    #     if [[ $repoproject == *"~"* ]]; then
-    #       user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
-    #       url_part="projects/$user_url/repos/$reponame"
-    #     else
-    #       url_part="projects/$repoproject/repos/$reponame"
-    #     fi
-    #     delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
-    #     echo $delete_url
-    #     #assemble the post deletion data
+    color::boldyellow "No changes!"
+    echo $delete_if_no_changes
+    if [[ $delete_if_no_changes == "true" ]]; then
+      echo "delete_if_no_changes flag is set to true via the pipeline."
+      echo "Cleaning up unnecessary branch..."
+      #assemble the delete url
+      if [[ $repoproject == *"~"* ]]; then
+        user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
+        url_part="projects/$user_url/repos/$reponame"
+      else
+        url_part="projects/$repoproject/repos/$reponame"
+      fi
+      delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
+      echo $delete_url
+      #     #assemble the post deletion data
 
-    #     generate_post_data_for_delete() {
-    #       cat <<EOF
-    #  {
-    #    "name": "$from_branch"
-    #    }
-    # EOF
-    #     }
-
-    #     curl -H "Authorization: Bearer ${access_token}" \
-    #       $delete_url \
-    #       --request DELETE --header 'Content-Type: application/json' \
-    #       --data "$(generate_post_data_for_delete)"
-    #     echo "Concourse branch has been removed."
-    ##############################################
+      generate_post_data_for_delete() {
+        cat <<EOF
+{  "name": "$from_branch" }
+EOF
+      }
+      # echo $(generate_post_data_for_delete)
+        curl --silent -H "Authorization: Bearer ${access_token}" \
+          $delete_url \
+          --request DELETE --header 'Content-Type: application/json' \
+          --data "$(generate_post_data_for_delete)"
+        color::boldyellow "Concourse has removed the branch."
+    fi
+    color::boldblue "=========================================================================="
     ;;
 
   *"Only one pull request may be open for a given source and target branch"*)
-    echo "Please view the pull request that already exists at ${bitbucket_url}${url_part}/pull-requests/"
+    echo "--------------------------------------------------------------------------"
+    color::boldyellow "Please view the pull request that already exists at ${bitbucket_url}${url_part}/pull-requests/"
+    color::boldblue "=========================================================================="
     ;;
   *)
-    echo "Something went wrong, please review the above message."
+    echo "--------------------------------------------------------------------------"
+    color::boldred "Something went wrong, please review the above message."
+    color::boldblue "=========================================================================="
     ;;
   esac
 
 else
   pr_id=$(cat response.json | jq '.id')
-  echo "=========================================================================="
-  echo "New pull request at ${bitbucket_url}${url_part}/pull-requests/${pr_id}/overview"
-  echo "=========================================================================="
+  color::boldgreen "=========================================================================="
+  color::boldgreen "New pull request at ${bitbucket_url}${url_part}/pull-requests/${pr_id}/overview"
+  color::boldgreen "=========================================================================="
 fi
