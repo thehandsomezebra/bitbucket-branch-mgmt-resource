@@ -139,7 +139,7 @@ jobs:
   - be written for Ubuntu Linux via `*.sh` file... The base image provided is small, but not extensive.
     - If you need additional packages, you may need to apt-get install it yourself in your script.
 - It does not support Git LFS. (And there are currently zero plans to support it. Sorry.)
-- See `example/script.sh` for a quick example of how you could use this.
+- Look in the [examples](examples/README.md) to understand how you could use this.
 
 ```yml
 jobs:
