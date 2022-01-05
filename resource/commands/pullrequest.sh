@@ -74,8 +74,8 @@ generate_post_data() {
   },
   ${reviewers_ready}
   "toRef": {
-    "id": "refs/heads/${pr_branch}",
-    "displayId": "$pr_branch",
+    "id": "refs/heads/${to_branch}",
+    "displayId": "$to_branch",
     "repository": {
       "slug": "$reponame",
       "name": "$reponame",
