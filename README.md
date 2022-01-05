@@ -36,23 +36,41 @@ Currently, it will do a PR for two existing branches.
 
 # Variables
 
-| Variable             | Req/Opt  | Location            | Description                                                                                                                                                                                                             |
-| -------------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command              | Required | Jobs block (in put) | Current actions availalable: `pullrequest`. Please see the section of the readme for what you need.                                                                                                                     |
-| from_branch          | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR from. This branch MUST already exist.                                                                                                                       |
-| to_branch            | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR into. This branch MUST already exist.                                                                                                                       |
-| reponame             | Required | Jobs block (in put) | The name of the repo that both branches reside in.                                                                                                                                                                      |
-| pr_title                | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR via Concourse"_                                                                                                                                      |
-| pr_description          | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR submitted --timestamp-- ."_                                                                                                                          |
-| repoproject          | Required | Jobs block (in put) | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde).                                                                             |
-| reviewers            | Optional | Jobs block (in put) | If you would like to automatically add reviewers, you may add them here as an array. The reviewers MUST exist, MUST have permissions for that project, and MUST have permissions for that repo. If that is not possible |
-| delete_if_no_changes | Optional | Jobs block (in put) | If concourse detects that the `to` and `from` branch has ZERO differences.. delete the branch. This defaults to `false`. **USE THIS FLAG AT YOUR OWN RISK!**                                                            |
-| bitbucket_url        | Required | Resource block      | This is the URL for your BitBucket.                                                                                                                                                                                     |
-| access_token                | Required | Resource block      | The token for the service user.                                                                                                                                                                                         |
+                                                           |
 
 ---
 
 # Usage
+
+---
+
+```yml
+resource_types:
+  - name: bitbucket-branch-mgmt-resource
+    type: registry-image
+    source:
+      repository: thehandsomezebra/bitbucket-branch-mgmt-resource
+      tag: latest
+```
+
+---
+
+```yml
+resources:
+  - name: bitbucket
+    icon: cloud
+    type: bitbucket-branch-mgmt-resource
+    source:
+      bitbucket_url: "https://bitbucket.company.com/"
+      access_token: (( vault "secret/concourse/devops_account:token" ))
+```
+
+| Variable      | Req/Opt  | Location       | Description                         |
+| ------------- | -------- | -------------- | ----------------------------------- |
+| bitbucket_url | Required | Resource block | This is the URL for your BitBucket. |
+| access_token  | Required | Resource block | The token for the service user.     |
+
+---
 
 ## This PUT command will make a PR.
 
@@ -74,28 +92,17 @@ jobs:
             - "user3"
 ```
 
----
-
-```yml
-resources:
-  - name: bitbucket
-    icon: cloud
-    type: bitbucket-branch-mgmt-resource
-    source:
-      bitbucket_url: "https://bitbucket.company.com/"
-      access_token: (( vault "secret/concourse/devops_account:token" ))
-```
-
----
-
-```yml
-resource_types:
-  - name: bitbucket-branch-mgmt-resource
-    type: registry-image
-    source:
-      repository: thehandsomezebra/bitbucket-branch-mgmt-resource
-      tag: latest
-```
+| Variable             | Req/Opt  | Location            | Description                                                                                                                                                                                                             |
+| -------------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command              | Required | Jobs block (in put) | Current actions availalable: `pullrequest`. Please see the section of the readme for what you need.                                                                                                                     |
+| from_branch          | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR from. This branch MUST already exist.                                                                                                                       |
+| to_branch            | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR into. This branch MUST already exist.                                                                                                                       |
+| reponame             | Required | Jobs block (in put) | The name of the repo that both branches reside in.                                                                                                                                                                      |
+| pr_title             | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR via Concourse"_                                                                                                                                      |
+| pr_description       | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR submitted --timestamp-- ."_                                                                                                                          |
+| repoproject          | Required | Jobs block (in put) | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde).                                                                             |
+| reviewers            | Optional | Jobs block (in put) | If you would like to automatically add reviewers, you may add them here as an array. The reviewers MUST exist, MUST have permissions for that project, and MUST have permissions for that repo. If that is not possible |
+| delete_if_no_changes | Optional | Jobs block (in put) | If concourse detects that the `to` and `from` branch has ZERO differences.. delete the branch. This defaults to `false`. **USE THIS FLAG AT YOUR OWN RISK!**                                                            |
 
 ---
 

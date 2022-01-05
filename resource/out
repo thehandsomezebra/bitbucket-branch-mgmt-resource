@@ -14,9 +14,6 @@ NC='\033[0m'         # No Color
 
 base_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 
-# source "$base_dir/resource/lib/logger.sh"
-# source "$base_dir/resource/lib/error-codes.sh"
-
 working_dir=${1:-}
 
 if [ -z "$working_dir" ]; then
@@ -37,12 +34,12 @@ get_config() {
   jq -r --arg default "$default" "$key // \$default" < "$PAYLOAD"
 }
 
-# #from the resource
+# #vars located in the resource
 bitbucket_url=$(jq -r '.source.bitbucket_url // ""' <"$PAYLOAD")
 access_token=$(jq -r '.source.access_token // ""' <"$PAYLOAD")
 
 
-# #from the task
+# #vars located in the task
 get_option() {
   local key=${1:?config key null or not set}
   local default=${2:-}
@@ -55,16 +52,12 @@ if [ -z "$params" ]; then
   exit 1
 fi
 
-
-
-
-##do things
+## do the tasks: ##
 # convert the single command into a single element array
 if echo $params | jq -e 'has("command")' >/dev/null; then
   params=$(jq -n --argjson params "$params" '{commands: [ $params ] }')
 fi
-
-#and now run thru the commands
+# run thru the commands
 echo "$params" | jq -c '.commands[]' | while read -r OPTIONS; do
   (
     command=$(get_option '.command')
