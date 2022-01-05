@@ -45,9 +45,13 @@ else
   reviewers_ready=""
 fi
 
-pr_title="PR via Concourse"
-now=$(date)
-pr_description="PR submitted $now"
+if [ -z "$pr_description" ]; then
+  pr_description="PR submitted `echo $(date)`"
+fi
+
+if [ -z "$pr_title" ]; then
+  pr_title="PR via Concourse"
+fi
 
 #assemble the post data
 generate_post_data() {
@@ -122,11 +126,11 @@ if cat response.json | grep -q '"message":'; then
 EOF
       }
       # echo $(generate_post_data_for_delete)
-        curl --silent -H "Authorization: Bearer ${access_token}" \
-          $delete_url \
-          --request DELETE --header 'Content-Type: application/json' \
-          --data "$(generate_post_data_for_delete)"
-        color::boldyellow "Concourse has removed the branch."
+      curl --silent -H "Authorization: Bearer ${access_token}" \
+        $delete_url \
+        --request DELETE --header 'Content-Type: application/json' \
+        --data "$(generate_post_data_for_delete)"
+      color::boldyellow "Concourse has removed the branch."
     fi
     color::boldblue "=========================================================================="
     ;;
