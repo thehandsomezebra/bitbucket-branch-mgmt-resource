@@ -106,31 +106,31 @@ if [ $? -eq 0 ]; then
     echo "No changes!"
 
     #################### IF THE DELETE FLAG IS ON:  delete_if_no_changes #######
-    echo "Cleaning up unnecessary branch..."
-    #assemble the delete url
-    if [[ $repoproject == *"~"* ]]; then
-      user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
-      url_part="projects/$user_url/repos/$reponame"
-    else
-      url_part="projects/$repoproject/repos/$reponame"
-    fi
-    delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
-    echo $delete_url
-    #assemble the post deletion data
+#     echo "Cleaning up unnecessary branch..."
+#     #assemble the delete url
+#     if [[ $repoproject == *"~"* ]]; then
+#       user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
+#       url_part="projects/$user_url/repos/$reponame"
+#     else
+#       url_part="projects/$repoproject/repos/$reponame"
+#     fi
+#     delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
+#     echo $delete_url
+#     #assemble the post deletion data
 
-    generate_post_data_for_delete() {
-      cat <<EOF
- {
-   "name": "$from_branch"
-   }
-EOF
-    }
+#     generate_post_data_for_delete() {
+#       cat <<EOF
+#  {
+#    "name": "$from_branch"
+#    }
+# EOF
+#     }
 
-    curl -H "Authorization: Bearer ${access_token}" \
-      $delete_url \
-      --request DELETE --header 'Content-Type: application/json' \
-      --data "$(generate_post_data_for_delete)"
-    echo "Concourse branch has been removed."
+#     curl -H "Authorization: Bearer ${access_token}" \
+#       $delete_url \
+#       --request DELETE --header 'Content-Type: application/json' \
+#       --data "$(generate_post_data_for_delete)"
+#     echo "Concourse branch has been removed."
     ##############################################
 
   elif
