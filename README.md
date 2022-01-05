@@ -94,7 +94,7 @@ jobs:
 | command              | Required | For a PR, please choose `pullrequest`.                                                                                                                                                                                  |
 | from_branch          | Required | The name of the branch that Concourse will be making the PR from. This branch MUST already exist.                                                                                                                       |
 | to_branch            | Required | The name of the branch that Concourse will be making the PR into. This branch MUST already exist.                                                                                                                       |
-| reponame             | Required | The name of the repo that both branches reside in.                                                                                                                                                                      |
+| reponame             | Required | The name of the repo.                                                                                                                                                                                                   |
 | repoproject          | Required | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde).                                                                             |
 | pr_title             | Optional | You may populate a custom title for your PR. _Default: "PR via Concourse"_                                                                                                                                              |
 | pr_description       | Optional | You may populate a custom title for your PR. _Default: "PR submitted --timestamp-- ."_                                                                                                                                  |
@@ -124,11 +124,52 @@ jobs:
 | command     | Required | For a PR, please choose `makebranch`.                                                                                                       |
 | new_branch  | Required | The name of the branch that Concourse will create for you.                                                                                  |
 | from_branch | Required | Concourse will create the new branch from this branch.                                                                                      |
-| reponame    | Required | The name of the repo that both branches reside in.                                                                                          |
+| reponame    | Required | The name of the repo.                                                                                                                       |
 | repoproject | Required | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde). |
 
 ---
 
+## Pull, Make a change via script, Push
+
+- Retrive a script via `- get: <resource>`
+  - The `<resource>` has been tested to work using the [built-in Concourse Git Resource Type](https://github.com/concourse/git-resource).
+- The script you run here should...
+  - be provided in your own repo as an input.
+  - be written from the perspective of entering your repo's root.
+  - be written for Ubuntu Linux via `*.sh` file... The base image provided is small, but not extensive.
+    - If you need additional packages, you may need to apt-get install it yourself in your script.
+- It does not support Git LFS. (And there are currently zero plans to support it. Sorry.)
+- See `example/script.sh` for a quick example of how you could use this.
+
+```yml
+jobs:
+  - name: bitbucket_actions
+    plan:
+      - get: script
+      - put: lets-make-a-change
+        resource: bitbucket
+        params:
+          command: pullchangepush
+          branch: "the_branch"
+          reponame: "cool-repo"
+          repoproject: "PROJECT"
+          script_file: "script/run_this_script.sh"
+          commit_message: "Script made changes" #optional
+          committer_email: "user@company.com" #optional
+          committer_name: "User Name" #optional
+```
+
+| Variable        | Req/Opt  | Description                                                                                                                                 |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| command         | Required | For a PR, please choose `pullchangepush`.                                                                                                   |
+| branch          | Required | The name of the branch that Concourse will pull, edit via script, and push for you.                                                         |
+| script_file     | Required | The `*.sh` script that concourse will run for you.                                                                                          |
+| reponame        | Required | The name of the repo.                                                                                                                       |
+| repoproject     | Required | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde). |
+| commit_message  | Optional | If you would like a custom commit message, you can enter it here. Defaults to `Changes created via Concourse`.                              |
+| committer_email | Optional | If you would like to customize the committing user's email. Defaults to `pipeline@concourse.com`.                                           |
+| committer_name  | Optional | If you would like to customize the committing user's name. Defaults to `Concourse Pipeline`.                                                |
+
 ### Planned later improvements:
 
-- Pull down a branch, run your own script, push up changes.
+- none yet.
