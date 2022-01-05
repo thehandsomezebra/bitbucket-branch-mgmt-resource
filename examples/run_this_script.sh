@@ -1,0 +1,1 @@
+echo $RANDOM > $RANDOM.txt

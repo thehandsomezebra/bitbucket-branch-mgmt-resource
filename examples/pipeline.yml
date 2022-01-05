@@ -1,0 +1,54 @@
+- name: automagic-workflow
+  plan:
+  - put: lets-make-a-new-branch
+    resource: bitbucket-mgmt
+    params:
+      command: makebranch
+      new_branch: "testing"
+      from_branch: "main"
+      reponame: "my-cool-repo"
+      repoproject: "PRO"
+  - get: scripts
+  - put: lets-make-a-change
+    resource: bitbucket-mgmt
+    params:
+      command: pullchangepush
+      branch: "testing"
+      reponame: "my-cool-repo"
+      repoproject: "PRO"
+      script_file: "scripts/run_this_script.sh"
+  - put: lets-make-a-pullrequest
+    resource: bitbucket-mgmt
+    params:
+      command: pullrequest
+      from_branch: "testing"
+      to_branch: "main"
+      reponame: "my-cool-repo"
+      repoproject: "PRO"
+      reviewers:
+        - username1
+        - username2
+
+resources:
+  - name: scripts
+    icon: git
+    type: git
+    source:
+      branch: main
+      uri: ssh://somewhere.com/project/scripts_repo.git
+      private_key: (( secret_key ))
+
+  - name: bitbucket-mgmt
+    icon: cloud
+    type: bitbucket-branch-mgmt-resource
+    source:
+      bitbucket_url: "https://mycompany.com/"
+      access_token: (( secret_access_token ))
+
+
+resource_types:
+  - name: bitbucket-branch-mgmt-resource
+    type: registry-image
+    source:
+      repository: thehandsomezebra/bitbucket-branch-mgmt-resource
+      tag: latest      
