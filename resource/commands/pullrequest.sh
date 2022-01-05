@@ -24,11 +24,8 @@ else
 fi
 api_url=$(echo ${bitbucket_url}"rest/api/1.0/"${url_part}"/pull-requests")
 
-
-
 if [ ! -z "$reviewers" ]; then
   # echo "Adding reviewers: $reviewers"
-
   tempDir=$(mktemp -dt "$(basename $0)-XXXXXXXXXX")
 
   reviewers_ready=' "reviewers": ['
@@ -48,7 +45,7 @@ else
 fi
 
 if [ -z "$pr_description" ]; then
-  pr_description="PR submitted `echo $(date)`"
+  pr_description="PR submitted $(echo $(date))"
 fi
 
 if [ -z "$pr_title" ]; then
