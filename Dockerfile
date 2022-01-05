@@ -1,3 +1,4 @@
+# FROM ubuntu
 FROM ubuntu
 
 ENV COLUMNS=80
@@ -7,23 +8,15 @@ ENV COLUMNS=80
 # base packages
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update \
-    && apt-get update && apt-get install -yy \
+
+RUN apt-get update -y \
+    && apt-get install -yy \
       curl \
       git \
       jq \
-      file \
       vim-common \
       wget \
-      unzip \
     && rm -rf /var/lib/apt/lists/*
-
-
-
-# # Install git-lfs
-# RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash && \
-#     apt-get install git-lfs && \
-#     git lfs install
 
 # Add a user for running things as non-superuser
 RUN useradd -ms /bin/bash worker
