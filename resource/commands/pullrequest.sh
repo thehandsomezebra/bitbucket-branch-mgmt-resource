@@ -1,5 +1,4 @@
 # xxx=$(get_option '.xxxx')
-
 from_branch=$(get_option '.from_branch')
 to_branch=$(get_option '.to_branch')
 reponame=$(get_option '.reponame')
@@ -14,9 +13,6 @@ delete_if_no_changes=$(get_option '.delete_if_no_changes')
 # These two vars were set from the resource via `out`
 # bitbucket_url
 # access_token
-
-echo "$to_branch"
-echo "Oh look, it made it here."
 ##############################
 
 # assemble the url... adjust it if it's user vs project...
@@ -92,57 +88,55 @@ echo $(generate_post_data)
 echo "Sending the above request to this url: $api_url "
 
 ## make a pull request
-
 curl -H "Authorization: Bearer ${access_token}" \
   $api_url \
   --request POST --header 'Content-Type: application/json' \
   --data "$(generate_post_data)" | jq '.' >response.json
 
-cat response.json
-
-cat response.json | jq '.[][].message' &>/dev/null
-if [ $? -eq 0 ]; then
-  #this will be an error message
+if cat response.json | grep -q '"message":'; then
+  #If `"message":` is populated.. it's an error.
   message=$(cat response.json | jq '.[][].message')
   echo $message
-  if [[ $message == *"already up-to-date"* ]]; then
+  case $message in
+  *"already up-to-date"*)
     echo "No changes!"
-
     #################### IF THE DELETE FLAG IS ON:  delete_if_no_changes #######
-#     echo "Cleaning up unnecessary branch..."
-#     #assemble the delete url
-#     if [[ $repoproject == *"~"* ]]; then
-#       user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
-#       url_part="projects/$user_url/repos/$reponame"
-#     else
-#       url_part="projects/$repoproject/repos/$reponame"
-#     fi
-#     delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
-#     echo $delete_url
-#     #assemble the post deletion data
+    #     echo "Cleaning up unnecessary branch..."
+    #     #assemble the delete url
+    #     if [[ $repoproject == *"~"* ]]; then
+    #       user_url=$(echo "$repoproject" | awk '{print toupper($0)}')
+    #       url_part="projects/$user_url/repos/$reponame"
+    #     else
+    #       url_part="projects/$repoproject/repos/$reponame"
+    #     fi
+    #     delete_url=$(echo ${bitbucket_url}"rest/branch-utils/latest/"${url_part}"/branches")
+    #     echo $delete_url
+    #     #assemble the post deletion data
 
-#     generate_post_data_for_delete() {
-#       cat <<EOF
-#  {
-#    "name": "$from_branch"
-#    }
-# EOF
-#     }
+    #     generate_post_data_for_delete() {
+    #       cat <<EOF
+    #  {
+    #    "name": "$from_branch"
+    #    }
+    # EOF
+    #     }
 
-#     curl -H "Authorization: Bearer ${access_token}" \
-#       $delete_url \
-#       --request DELETE --header 'Content-Type: application/json' \
-#       --data "$(generate_post_data_for_delete)"
-#     echo "Concourse branch has been removed."
+    #     curl -H "Authorization: Bearer ${access_token}" \
+    #       $delete_url \
+    #       --request DELETE --header 'Content-Type: application/json' \
+    #       --data "$(generate_post_data_for_delete)"
+    #     echo "Concourse branch has been removed."
     ##############################################
+    ;;
 
-  elif
-    [[ $message == *"Only one pull request may be open for a given source and target branch"* ]]
-  then
+  *"Only one pull request may be open for a given source and target branch"*)
     echo "Please view the pull request that already exists at ${bitbucket_url}${url_part}/pull-requests/"
-  else
+    ;;
+  *)
     echo "Something went wrong, please review the above message."
-  fi
+    ;;
+  esac
+
 else
   pr_id=$(cat response.json | jq '.id')
   echo "=========================================================================="

@@ -65,10 +65,10 @@ resources:
       access_token: (( vault "secret/concourse/devops_account:token" ))
 ```
 
-| Variable      | Req/Opt  | Location       | Description                         |
-| ------------- | -------- | -------------- | ----------------------------------- |
-| bitbucket_url | Required | Resource block | This is the URL for your BitBucket. |
-| access_token  | Required | Resource block | The token for the service user.     |
+| Variable      | Req/Opt  | Description                         |
+| ------------- | -------- | ----------------------------------- |
+| bitbucket_url | Required | This is the URL for your BitBucket. |
+| access_token  | Required | The token for the service user.     |
 
 ---
 
@@ -82,7 +82,7 @@ jobs:
         resource: bitbucket
         params:
           command: pullrequest
-          from_branch: "concourse/branch_with_changes"
+          from_branch: "branch_with_changes"
           to_branch: "main"
           reponame: "cool-repo"
           repoproject: "PROJECT"
@@ -92,17 +92,17 @@ jobs:
             - "user3"
 ```
 
-| Variable             | Req/Opt  | Location            | Description                                                                                                                                                                                                             |
-| -------------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| command              | Required | Jobs block (in put) | Current actions availalable: `pullrequest`. Please see the section of the readme for what you need.                                                                                                                     |
-| from_branch          | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR from. This branch MUST already exist.                                                                                                                       |
-| to_branch            | Required | Jobs block (in put) | The name of the branch that Concourse will be making the PR into. This branch MUST already exist.                                                                                                                       |
-| reponame             | Required | Jobs block (in put) | The name of the repo that both branches reside in.                                                                                                                                                                      |
-| pr_title             | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR via Concourse"_                                                                                                                                      |
-| pr_description       | Optional | Jobs block (in put) | You may populate a custom title for your PR. _Default will say "PR submitted --timestamp-- ."_                                                                                                                          |
-| repoproject          | Required | Jobs block (in put) | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde).                                                                             |
-| reviewers            | Optional | Jobs block (in put) | If you would like to automatically add reviewers, you may add them here as an array. The reviewers MUST exist, MUST have permissions for that project, and MUST have permissions for that repo. If that is not possible |
-| delete_if_no_changes | Optional | Jobs block (in put) | If concourse detects that the `to` and `from` branch has ZERO differences.. delete the branch. This defaults to `false`. **USE THIS FLAG AT YOUR OWN RISK!**                                                            |
+| Variable             | Req/Opt  | Description                                                                                                                                                                                                             |
+| -------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| command              | Required | For a PR, please choose `pullrequest`.                                                                                                                                                                                  |
+| from_branch          | Required | The name of the branch that Concourse will be making the PR from. This branch MUST already exist.                                                                                                                       |
+| to_branch            | Required | The name of the branch that Concourse will be making the PR into. This branch MUST already exist.                                                                                                                       |
+| reponame             | Required | The name of the repo that both branches reside in.                                                                                                                                                                      |
+| repoproject          | Required | The name of the project that the repo resides in. If you are using this for a USER account, please note it as `~USERNAME` (keep the tilde).                                                                             |
+| pr_title             | Optional | You may populate a custom title for your PR. _Default: "PR via Concourse"_                                                                                                                                              |
+| pr_description       | Optional | You may populate a custom title for your PR. _Default: "PR submitted --timestamp-- ."_                                                                                                                                  |
+| reviewers            | Optional | If you would like to automatically add reviewers, you may add them here as an array. The reviewers MUST exist, MUST have permissions for that project, and MUST have permissions for that repo. If that is not possible |
+| delete_if_no_changes | Optional | If concourse detects that the `to` and `from` branch has ZERO differences.. delete the branch. This defaults to `false`. **USE THIS FLAG AT YOUR OWN RISK!**                                                            |
 
 ---
 
