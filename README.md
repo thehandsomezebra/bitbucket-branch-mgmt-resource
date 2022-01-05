@@ -2,6 +2,8 @@
 
 A resource type to do some branch management in a repo via concourse.
 
+Please look in the [examples](examples/README.md) to understand how you could use this.
+
 This resource type has three commands:
 
 - [Make a new branch](#make-a-new-branch)
@@ -103,7 +105,7 @@ jobs:
   - be written for Ubuntu Linux via `*.sh` file... The base image provided is small, but not extensive.
     - If you need additional packages, you may need to apt-get install it yourself in your script.
 - It does not support Git LFS. (And there are currently zero plans to support it. Sorry.)
-- Look in the [examples](examples/README.md) to understand how you could use this.
+
 
 ```yml
 jobs:
