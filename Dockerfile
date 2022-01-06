@@ -16,6 +16,7 @@ RUN apt-get update -y \
       jq \
       vim-common \
       wget \
+      tree \
     && rm -rf /var/lib/apt/lists/*
 
 # Add a user for running things as non-superuser
