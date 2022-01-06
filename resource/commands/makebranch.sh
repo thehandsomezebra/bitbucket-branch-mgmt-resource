@@ -52,7 +52,9 @@ EOF
     color::boldgreen "=========================================================================="
   else
     color::boldred "=========================================================================="
-    color::boldred "Branch did not exist; Concourse encountered an error creating new branch $new_branch."
+    color::boldred "    Concourse encountered an error creating new branch $new_branch."
+    color::boldred "     (You may need to check permissions"
+    color::boldred "           for the account of the provided token.)"
     color::boldred "=========================================================================="
     exit 1
   fi
