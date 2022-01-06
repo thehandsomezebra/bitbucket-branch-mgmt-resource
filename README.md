@@ -17,6 +17,8 @@ This resource type has three commands:
 - A token for a BitBucket user is required: Service accounts are recommended. (see Service Account section below)
 - You may use a repo in a project OR a repo that belongs to a user. The BitBucket user mentioned above MUST have access to it.
 - Other recommendations I would give you would be to use the [built-in Concourse Git Resource Type](https://github.com/concourse/git-resource). Read up on that. You can use the `put` to push local commits to the repo.
+- Anytime I mention `projectname` -- I am meaning the PROJECT KEY.  So if your project is named `Cool Team` but the key is just `COOL`...then please provide `COOL`.
+  - If you don't know what the key is, check the URL and provide that.
 
 ---
 
