@@ -31,8 +31,8 @@ The workflow works like this:
   - Grant it `+x` to give it the ability to run.
   - Run thru the paths in your repo to update `README.md` with the automated Terraform Docs.
   - Clean up `tmp/`
-4. Add, commit, and push the changes up to the branch `feature/update-tf-docs"`.
-5. Submit a Pull Request from `feature/update-tf-docs"` back to `master`, adding `myusername`, `thatusername`, and `yourusername` as reviewers.
+4. Add, commit, and push the changes up to the branch `feature/update-tf-docs`.
+5. Submit a Pull Request from `feature/update-tf-docs` back to `master`, adding `myusername`, `thatusername`, and `yourusername` as reviewers.
 
 
 
