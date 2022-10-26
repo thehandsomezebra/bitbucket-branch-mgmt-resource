@@ -1,5 +1,5 @@
 # FROM ubuntu
-FROM ubuntu
+FROM ubuntu:22.04
 
 ENV COLUMNS=80
 
