@@ -1,5 +1,5 @@
 # FROM ubuntu
-FROM ubuntu
+FROM ubuntu:kinetic-20220830
 
 ENV COLUMNS=80
 
